@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auralis AI Template Documentation</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #334155;
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8fafc;
+    }
+    aside {
+      width: 280px;
+      background-color: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    main {
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 900px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 2rem;
+      border-b: 1px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9em;
+      background-color: #f1f5f9;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      color: #6366f1;
+    }
+    pre {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+    }
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      background-color: #e0e7ff;
+      color: #4f46e5;
+    }
+    .nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0 0 0;
+    }
+    .nav-links li {
+      margin-bottom: 0.75rem;
+    }
+    .nav-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover {
+      color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">A</div>
+      <span style="font-weight: 800; font-size: 1.25rem; color: #0f172a;">Auralis AI</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#welcome">Introduction</a></li>
+      <li><a href="#features">Key Features</a></li>
+      <li><a href="#folder-structure">Folder Structure</a></li>
+      <li><a href="#installation">Setup & Installation</a></li>
+      <li><a href="#routing">Routing & Pages</a></li>
+      <li><a href="#theme">Theme & RTL Customization</a></li>
+      <li><a href="#credits">Credits</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <section id="welcome">
+      <h1>Auralis AI Documentation</h1>
+      <span class="badge">Version 1.0.0</span>
+      <p style="margin-top: 1.5rem; font-size: 1.1rem; color: #475569;">
+        Auralis AI is a ThemeForest-ready Next.js + Tailwind CSS + TypeScript SaaS and Admin Dashboard Multipurpose Template. 
+        Featuring 184+ high-fidelity routes, 12 dashboard layouts, dynamic RTL/LTR support, and Light/Dark modes.
+      </p>
+    </section>
+
+    <section id="features">
+      <h2>Key Features</h2>
+      <ul>
+        <li><strong>Next.js (App Router):</strong> Modern static routing with state-of-the-art architectures.</li>
+        <li><strong>Tailwind CSS:</strong> Customized theme structure using Tailwind inline theme imports.</li>
+        <li><strong>RTL support:</strong> Fully responsive direction toggles for Arabic and Hebrew support.</li>
+        <li><strong>Light & Dark modes:</strong> Smooth class-based theme switcher saved in local storage.</li>
+        <li><strong>Dynamic routing:</strong> 184+ pages structured dynamically via static parameters, ready to be linked to APIs.</li>
+        <li><strong>No jQuery:</strong> 100% clean component-based React framework.</li>
+      </ul>
+    </section>
+
+    <section id="folder-structure">
+      <h2>Folder Structure</h2>
+      <pre><code>├── documentation/          # Offline HTML Documentation files
+├── public/                 # Favicons and assets
+├── src/
+│   ├── app/                # Next.js App Router dynamic routes
+│   │   ├── [group]/[slug]  # Catch-all dynamic renderer pages
+│   │   ├── page.tsx        # Landing/Preview portal
+│   │   └── globals.css     # Tailwind styling rules
+│   ├── components/         # Reusable layouts, Navbars, and Chart components
+│   └── data/               # Static pages registry and chart data arrays
+├── package.json            # Node modules and build scripts
+└── tsconfig.json           # TypeScript configuration</code></pre>
+    </section>
+
+    <section id="installation">
+      <h2>Setup & Installation</h2>
+      <p>Ensure you have Node.js installed on your local machine, then open your terminal inside the project directory and run:</p>
+      <pre><code># Install node modules
+npm install
+
+# Start local dev server
+npm run dev
+
+# Compile static HTML files for hosting
+npm run build</code></pre>
+      <p>Static build files will compile into the <code>dist/</code> or <code>out/</code> directory, ready to deploy to Cloudflare Pages or Vercel.</p>
+    </section>
+
+    <section id="routing">
+      <h2>Routing & Pages</h2>
+      <p>All template pages are defined inside <code>src/data/pagesDb.ts</code>. You can easily add, rename, or structure routes without writing new JSX files. To map a path to your own custom page design, modify <code>src/components/PageRenderer.tsx</code>.</p>
+    </section>
+
+    <section id="theme">
+      <h2>Theme & RTL Customization</h2>
+      <p>Theme colors and variables are configured inside <code>src/app/globals.css</code>. Layout direction and dark/light switching states are managed dynamically via the client context wrapper inside <code>src/components/Providers.tsx</code>.</p>
+    </section>
+
+    <section id="credits">
+      <h2>Credits</h2>
+      <p>Auralis AI uses standard libraries including Recharts for clean data visualizations, Lucide React for modern vector icon sets, and Google Fonts for typography.</p>
+    </section>
+  </main>
+</body>
+</html>
