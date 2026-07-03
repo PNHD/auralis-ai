@@ -1,38 +1,59 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useApp } from "@/components/Providers";
+import { STITCH_HTML } from "@/data/stitchHtml";
+import { ALL_PAGES } from "@/data/pagesDb";
 import {
   Sparkles,
-  ArrowRight,
+  Search,
+  Globe,
   Sun,
   Moon,
-  Globe,
-  LayoutDashboard,
-  Bot,
-  Contact,
-  FolderKanban,
-  ShoppingBag,
-  GraduationCap,
-  HelpCircle,
-  Users,
-  CircleDollarSign,
-  HeartPulse,
-  Component,
-  Lock,
-  FileText,
-  CheckCircle2,
-  Cpu,
+  FolderOpen,
+  X,
+  ChevronRight,
+  ArrowUpRight,
+  Layout,
   Layers,
-  Zap,
+  Cpu,
 } from "lucide-react";
-import { ALL_PAGES, PageInfo } from "@/data/pagesDb";
 
-export default function LandingPage() {
+export default function Home() {
   const { theme, dir, toggleTheme, toggleDir } = useApp();
+  const [explorerOpen, setExplorerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
 
+  // Load Stitch homepage HTML
+  const homeScreen = STITCH_HTML["marketing/home"];
+
+  // Execute inline scripts for the homepage
+  useEffect(() => {
+    const container = document.getElementById("stitch-home-container");
+    if (!container) return;
+
+    const scripts = container.querySelectorAll("script");
+    const spawnedScripts: HTMLScriptElement[] = [];
+
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      if (oldScript.src) {
+        newScript.src = oldScript.src;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+      document.body.appendChild(newScript);
+      spawnedScripts.push(newScript);
+    });
+
+    return () => {
+      spawnedScripts.forEach((s) => s.remove());
+    };
+  }, []);
+
+  // Categories list
   const categories = [
     { id: "all", label: "All Pages", count: ALL_PAGES.length },
     { id: "dashboard", label: "Dashboards", count: 12 },
@@ -43,247 +64,193 @@ export default function LandingPage() {
     { id: "lms", label: "LMS Portal", count: 12 },
     { id: "help-desk", label: "Help Desk", count: 12 },
     { id: "hr", label: "HR Systems", count: 12 },
-    { id: "finance", label: "Finance", count: 10 },
+    { id: "finance", label: "Finance Pages", count: 10 },
     { id: "healthcare", label: "Healthcare", count: 10 },
-    { id: "components", label: "UI Components", count: 25 },
+    { id: "components", label: "Components", count: 25 },
     { id: "auth", label: "Auth & Utils", count: 20 },
     { id: "docs", label: "Documentation", count: 10 },
   ];
 
-  const filteredPages = activeCategory === "all"
-    ? ALL_PAGES
-    : ALL_PAGES.filter(p => p.group === activeCategory);
-
-  const keyFeatures = [
-    { title: "Next.js + TypeScript", desc: "Built with the latest App Router structure.", icon: Cpu },
-    { title: "Tailwind CSS", desc: "No custom CSS bloat. Custom themes configure in globals.css.", icon: Layers },
-    { title: "RTL Ready", desc: "Full direction switch support for Arabic/Hebrew layouts.", icon: Globe },
-    { title: "Light & Dark Mode", desc: "Seamless class-based theme switcher.", icon: Sun },
-    { title: "No jQuery", desc: "100% clean component-based React state architecture.", icon: Zap },
-    { title: "Well Documented", desc: "Comprehensive guides to customize layouts and routes.", icon: FileText },
-  ];
+  // Filter pages
+  const filteredPages = ALL_PAGES.filter((p) => {
+    const matchesCategory = activeCategory === "all" || p.group === activeCategory;
+    const matchesSearch =
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.slug.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
-      {/* Background Glowing Blobs */}
-      <div className="absolute top-0 inset-x-0 h-[600px] overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-40 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] dark:bg-indigo-500/5"></div>
-        <div className="absolute -top-20 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] dark:bg-purple-500/5"></div>
-      </div>
+    <div className="relative min-h-screen">
+      {/* Stitch HTML Renderer */}
+      {homeScreen ? (
+        <div
+          id="stitch-home-container"
+          className={`${homeScreen.bodyClass} min-h-screen`}
+          dangerouslySetInnerHTML={{ __html: homeScreen.html }}
+        />
+      ) : (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-6">
+          <Sparkles className="w-12 h-12 text-indigo-500 animate-pulse mb-4" />
+          <h2 className="text-xl font-bold">Stitch Design System Loading...</h2>
+          <p className="text-xs text-slate-400 mt-2">Failed to load the HTML layout</p>
+        </div>
+      )}
 
-      {/* Navigation Header */}
-      <header className="relative z-10 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/40">
-        <div className="flex items-center gap-2">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-600 text-white p-2.5 rounded-2xl shadow-lg shadow-indigo-500/20">
-            <Sparkles className="w-5 h-5" />
+      {/* Floating Demo Control Bar (Premium theme toggle / explorer trigger) */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-full bg-slate-950/80 backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-300 hover:scale-102">
+        {/* Sparkle branding */}
+        <div className="flex items-center gap-2 border-r border-white/10 pr-3">
+          <div className="bg-gradient-to-tr from-violet-500 to-indigo-500 text-white p-1.5 rounded-lg">
+            <Sparkles className="w-4 h-4" />
           </div>
-          <span className="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-950 to-slate-800 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
+          <span className="text-xs font-black tracking-wider text-white uppercase hidden md:inline">
             Auralis AI
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={toggleDir}
-            title="Toggle RTL/LTR"
-            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-          >
-            <Globe className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-          </button>
-          <button
-            onClick={toggleTheme}
-            title="Toggle Theme"
-            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-          >
-            {theme === "dark" ? (
-              <Sun className="w-4 h-4 text-slate-400" />
-            ) : (
-              <Moon className="w-4 h-4 text-slate-600" />
-            )}
-          </button>
-          <Link
-            href="/documentation"
-            className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 duration-150"
-          >
-            <span>Read Docs</span>
-          </Link>
-        </div>
-      </header>
+        {/* Action Controls */}
+        <button
+          onClick={toggleDir}
+          title="Toggle Layout Direction (RTL / LTR)"
+          className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition"
+        >
+          <Globe className="w-4 h-4" />
+        </button>
 
-      {/* Hero section */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-20 md:py-28 text-center space-y-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 rounded-full text-xs font-bold text-indigo-600 dark:text-indigo-400">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Multipurpose SaaS Website & Admin Dashboard Template</span>
-        </div>
+        <button
+          onClick={toggleTheme}
+          title="Toggle Dark/Light Mode"
+          className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition"
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none bg-gradient-to-tr from-slate-950 to-slate-800 dark:from-white dark:to-slate-200 bg-clip-text text-transparent max-w-4xl mx-auto">
-          ThemeForest Grade Next.js + Tailwind Template
-        </h1>
+        {/* Page Directory Toggle Button */}
+        <button
+          onClick={() => setExplorerOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold rounded-lg shadow-lg shadow-indigo-600/20 transition-all active:scale-98"
+        >
+          <FolderOpen className="w-3.5 h-3.5" />
+          <span>Browse 198+ Pages Portal</span>
+        </button>
+      </div>
 
-        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Unlock 184+ high-fidelity routes, 12+ premium dashboard layouts, and AI application mockups.
-          Built using clean components, ready to load your APIs.
-        </p>
+      {/* Slide-over Drawer Page Explorer */}
+      <div
+        className={`fixed inset-0 z-50 overflow-hidden transition-all duration-300 ${
+          explorerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop overlay */}
+        <div
+          onClick={() => setExplorerOpen(false)}
+          className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
+        />
 
-        {/* Big Badge Claims */}
-        <div className="flex flex-wrap justify-center gap-3 pt-4">
-          {["184+ Pages", "12+ Dashboards", "RTL Ready", "Light & Dark Mode", "No jQuery", "Well Documented"].map(
-            (badge, idx) => (
-              <span
-                key={idx}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
-              >
-                {badge}
-              </span>
-            )
-          )}
-        </div>
-
-        <div className="pt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <Link
-            href="/dashboard/ai-saas"
-            className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-          >
-            <span>Explore Dashboard Live Demo</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="#routes-explorer"
-            className="px-8 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-2xl shadow-sm transition"
-          >
-            <span>Browse 184+ Routes</span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Feature Grid */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-16 border-t border-slate-200/60 dark:border-slate-800/40">
-        <div className="text-center space-y-2 mb-12">
-          <h2 className="text-2xl font-extrabold">ThemeForest Grade Feature Set</h2>
-          <p className="text-xs text-slate-400">Everything needed to build professional enterprise layouts</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {keyFeatures.map((f, i) => {
-            const Icon = f.icon;
-            return (
-              <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-indigo-500/10 p-3 rounded-xl w-fit text-indigo-500 mb-4">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h4 className="font-extrabold text-sm mb-2">{f.title}</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{f.desc}</p>
+        {/* Slider panel */}
+        <div
+          className={`absolute top-0 right-0 bottom-0 w-full max-w-2xl bg-slate-900 border-l border-slate-800 text-white shadow-2xl flex flex-col transition-transform duration-300 ${
+            explorerOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-slate-950/20">
+            <div className="flex items-center gap-2">
+              <div className="bg-indigo-500/10 p-2 rounded-xl text-indigo-400">
+                <Layers className="w-5 h-5" />
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Dashboard Preview Cards */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-16 border-t border-slate-200/60 dark:border-slate-800/40">
-        <div className="text-center space-y-2 mb-12">
-          <h2 className="text-2xl font-extrabold">12+ Dashboard Layout Variants</h2>
-          <p className="text-xs text-slate-400">Pre-designed control panels optimized for multiple business metrics</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[
-            { id: "ai-saas", title: "AI SaaS Console", desc: "API usage and limits parameters.", color: "from-violet-500 to-indigo-500" },
-            { id: "analytics", title: "Advanced Analytics", desc: "Chart reports and traffic sources.", color: "from-blue-500 to-sky-500" },
-            { id: "crm-dashboard", title: "CRM Control Panel", desc: "Pipeline details and sales representative records.", color: "from-emerald-500 to-teal-500" },
-            { id: "project-mgmt", title: "Project Management", desc: "Task tracking and workloads timeline.", color: "from-amber-500 to-orange-500" },
-            { id: "ecommerce", title: "eCommerce Dashboard", desc: "Sales totals, cart ratios and products inventory.", color: "from-fuchsia-500 to-pink-500" },
-            { id: "lms", title: "LMS Learning Portal", desc: "Curriculum trackers and classes lists.", color: "from-indigo-500 to-cyan-500" },
-            { id: "help-desk", title: "Help Desk Support", desc: "Customer tickets queues and CSAT stats.", color: "from-rose-500 to-pink-500" },
-            { id: "hr-mgmt", title: "HR Administration", desc: "Headcount charts and time-off requests.", color: "from-purple-500 to-indigo-500" },
-          ].map((dash, idx) => (
-            <Link
-              key={idx}
-              href={`/dashboard/${dash.id}`}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5"
-            >
-              <div className={`h-3 bg-gradient-to-r ${dash.color}`}></div>
-              <div className="p-5 space-y-2">
-                <h5 className="font-extrabold text-xs text-slate-400 uppercase tracking-widest">Dashboard #{idx + 1}</h5>
-                <h4 className="font-bold text-sm group-hover:text-indigo-500 transition-colors">{dash.title}</h4>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{dash.desc}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Routes Explorer (Dynamic Explorer) */}
-      <section id="routes-explorer" className="relative z-10 max-w-7xl mx-auto px-6 py-16 border-t border-slate-200/60 dark:border-slate-800/40">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-          <div>
-            <h2 className="text-2xl font-extrabold">Complete Page Directory Explorer</h2>
-            <p className="text-xs text-slate-400 mt-1">Interactively review and select from 184+ exported static routes</p>
-          </div>
-        </div>
-
-        {/* Categories Scroller */}
-        <div className="flex overflow-x-auto gap-2 pb-4 mb-6 custom-scrollbar">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold shrink-0 transition-all ${
-                activeCategory === cat.id
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
-                  : "bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
-              }`}
-            >
-              <span>{cat.label}</span>
-              <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${
-                activeCategory === cat.id ? "bg-indigo-700 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500"
-              }`}>
-                {cat.count}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Pages Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredPages.slice(0, 32).map((p) => (
-            <Link
-              key={p.slug}
-              href={`/${p.group}/${p.slug}`}
-              className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-2xl hover:border-indigo-500/50 hover:shadow-md transition-all group flex flex-col justify-between min-h-[140px]"
-            >
               <div>
-                <span className="text-[9px] uppercase font-extrabold tracking-widest text-indigo-500 bg-indigo-500/5 px-2 py-0.5 rounded border border-indigo-500/10">
-                  {p.group}
-                </span>
-                <h4 className="font-bold text-sm mt-3 text-slate-800 dark:text-slate-100 group-hover:text-indigo-500 transition-colors">
-                  {p.title}
-                </h4>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mt-1.5 line-clamp-2">
-                  {p.description}
-                </p>
+                <h3 className="font-extrabold text-sm">ThemeForest Multipurpose Kit Portal</h3>
+                <p className="text-[10px] text-slate-400">Navigate 198 physical routes compiled from Stitch</p>
               </div>
-              <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mt-4 group-hover:translate-x-1 transition-transform">
-                <span>Load Live Template</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {filteredPages.length > 32 && (
-          <div className="text-center mt-10">
-            <p className="text-xs text-slate-400">And {filteredPages.length - 32} more pages in this category...</p>
+            </div>
+            <button
+              onClick={() => setExplorerOpen(false)}
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        )}
-      </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 py-12 text-center text-xs text-slate-500 dark:text-slate-400">
-        <p>© 2026 Auralis AI template. Created for ThemeForest kit portfolios.</p>
-        <p className="mt-1">All rights reserved. Static mockups ready for dynamic API hooks integration.</p>
-      </footer>
+          {/* Search bar */}
+          <div className="p-6 border-b border-slate-800 bg-slate-950/10">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Search from 198+ pages..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-950/50 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-xs text-white placeholder-slate-500 outline-none transition"
+              />
+            </div>
+          </div>
+
+          {/* Categories Tab list */}
+          <div className="flex items-center gap-2 overflow-x-auto px-6 py-4 border-b border-slate-800 bg-slate-950/5 custom-scrollbar scrollbar-thin">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                  activeCategory === cat.id
+                    ? "bg-indigo-600 text-white"
+                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span className="ml-1 text-[9px] px-1 py-0.2 bg-black/20 rounded-full text-indigo-300">
+                  {cat.count}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Pages list scrollable container */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+            {filteredPages.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filteredPages.map((p) => (
+                  <Link
+                    key={p.slug}
+                    href={`/${p.group}/${p.slug}`}
+                    onClick={() => setExplorerOpen(false)}
+                    className="flex flex-col justify-between p-4 bg-slate-950/30 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-950/50 rounded-xl transition group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-extrabold uppercase text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                          {p.group}
+                        </span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                      </div>
+                      <h4 className="font-bold text-xs mt-2 group-hover:text-indigo-400 transition-colors">
+                        {p.title}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                        {p.description}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center text-slate-500">
+                <Layout className="w-8 h-8 mb-2 opacity-50" />
+                <p className="text-xs">No pages found matching search</p>
+              </div>
+            )}
+          </div>
+
+          {/* Footer of the Portal panel */}
+          <div className="p-6 border-t border-slate-800 bg-slate-950 text-center text-[10px] text-slate-500 flex justify-between items-center">
+            <span>Auralis AI multipurpose presentation kit</span>
+            <span>198 screens compiled statically</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
