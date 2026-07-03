@@ -14,6 +14,7 @@ import {
   Plus,
   Search,
   CheckCircle,
+  CheckCircle2,
   Clock,
   AlertCircle,
   ChevronRight,
@@ -35,6 +36,12 @@ import {
   Upload,
   Play,
   RotateCw,
+  FolderKanban,
+  ShoppingBag,
+  GraduationCap,
+  Cpu,
+  Layers,
+  HelpCircle,
 } from "lucide-react";
 import Charts from "./Charts";
 import { useApp } from "./Providers";
@@ -128,6 +135,585 @@ export default function PageRenderer({ group, slug }: PageRendererProps) {
   // 1. DASHBOARDS RENDERER
   const renderDashboard = () => {
     switch (slug) {
+      case "analytics":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Total Visitors", val: "148,920", change: "+18.2%", isPositive: true, desc: "vs last week", icon: Users, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Unique Sessions", val: "94,302", change: "+12.4%", isPositive: true, desc: "Avg 4m 12s duration", icon: Activity, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+                { title: "Bounce Rate", val: "38.4%", change: "-2.1%", isPositive: true, desc: "Page views up", icon: TrendingUp, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Conversions", val: "3,480", change: "+8.9%", isPositive: true, desc: "ROAS 4.2x", icon: DollarSign, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Traffic Acquisition Analytics</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Users", "Sessions"]} colors={["#6366f1", "#0ea5e9"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Top Referrals</h4>
+                <div className="space-y-4">
+                  {[
+                    { source: "Google Organic", count: "48,200", percent: "51.1%", width: "w-[51.1%]" },
+                    { source: "Direct Traffic", count: "24,800", percent: "26.3%", width: "w-[26.3%]" },
+                    { source: "GitHub Referrals", count: "12,900", percent: "13.6%", width: "w-[13.6%]" },
+                    { source: "Social Ads", count: "8,400", percent: "8.9%", width: "w-[8.9%]" },
+                  ].map((ref, idx) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span>{ref.source}</span>
+                        <span className="text-slate-400">{ref.count} ({ref.percent})</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className={`h-full bg-indigo-500 ${ref.width} rounded-full`}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "crm-dashboard":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Total Revenue", val: "$48,920", change: "+14.2%", isPositive: true, desc: "vs last quarter", icon: DollarSign, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Lead Inflow", val: "1,248 leads", change: "+8.3%", isPositive: true, desc: "52 today", icon: Users, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Deals Progressing", val: "84 active", change: "+4.1%", isPositive: true, desc: "Avg size $4,500", icon: Activity, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Win Ratio", val: "24.2%", change: "+1.8%", isPositive: true, desc: "Higher close rate", icon: Percent, color: "text-amber-500 bg-amber-50 dark:bg-amber-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Sales Deal Flow Funnel</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Revenue", "Users"]} colors={["#10b981", "#6366f1"]} type="bar" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Deals in pipeline</h4>
+                <div className="space-y-4 divide-y divide-slate-100 dark:divide-slate-800">
+                  {[
+                    { client: "Acme Corp Ltd", size: "$12,400", stage: "Proposal", status: "text-amber-500 bg-amber-50 dark:bg-amber-950/20" },
+                    { client: "Starlight Ag", size: "$8,500", stage: "Negotation", status: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                    { client: "Delta Labs", size: "$22,000", stage: "Contracting", status: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                    { client: "Alpha Inc", size: "$4,800", stage: "Lead Captured", status: "text-slate-500 bg-slate-50 dark:bg-slate-800/40" },
+                  ].map((deal, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 first:pt-0">
+                      <div>
+                        <p className="text-xs font-bold">{deal.client}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{deal.size}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${deal.status}`}>{deal.stage}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "project-mgmt":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Active Sprints", val: "4 Sprints", change: "+1 today", isPositive: true, desc: "Team velocity 45", icon: FolderKanban, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Completed Tasks", val: "348 tasks", change: "+18.3%", isPositive: true, desc: "84 remaining in backlog", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Overdue Items", val: "2 delays", change: "-4", isPositive: true, desc: "Critical path clear", icon: AlertCircle, color: "text-rose-500 bg-rose-50 dark:bg-rose-950/20" },
+                { title: "Resource Load", val: "88%", change: "+2%", isPositive: false, desc: "Optimal allocation", icon: Users, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Sprint Delivery Speed</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Sessions"]} colors={["#a855f7"]} type="line" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Active Projects Progress</h4>
+                <div className="space-y-4">
+                  {[
+                    { project: "Auralis AI NextJS", progress: "85%", color: "bg-indigo-500", lead: "Sarah Connor" },
+                    { project: "Tailwind V4 Upgrade", progress: "60%", color: "bg-sky-500", lead: "Alex Merc" },
+                    { project: "Stitch Integrator module", progress: "40%", color: "bg-amber-500", lead: "Diana Prince" },
+                    { project: "Marketing Campaign assets", progress: "100%", color: "bg-emerald-500", lead: "Clark Kent" },
+                  ].map((p, idx) => (
+                    <div key={idx} className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-bold">{p.project}</span>
+                        <span className="text-slate-400 font-semibold">{p.progress} (Lead: {p.lead})</span>
+                      </div>
+                      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className={`h-full ${p.color}`} style={{ width: p.progress }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "ecommerce":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Store Revenue", val: "$92,480.12", change: "+24.5%", isPositive: true, desc: "vs last month", icon: DollarSign, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Products Listed", val: "3,480 items", change: "+12 created", isPositive: true, desc: "24 categories", icon: ShoppingBag, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Abandoned Carts", val: "14%", change: "-2.5%", isPositive: true, desc: "Better conversion rate", icon: Activity, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Low Stock Alerts", val: "8 items", change: "+3 alerts", isPositive: false, desc: "Restock required", icon: AlertCircle, color: "text-rose-500 bg-rose-50 dark:bg-rose-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Monthly Store Sales Conversion</h4>
+                <Charts data={MOCK_DATA.finance} dataKeys={["Revenue"]} colors={["#e11d48"]} type="bar" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Stock notifications</h4>
+                <div className="space-y-4">
+                  {[
+                    { item: "Wireless Keyboard MX", stock: "2 left", status: "text-rose-500 bg-rose-50 dark:bg-rose-950/20" },
+                    { item: "UltraWide Curved Monitor", stock: "0 left", status: "text-rose-600 bg-rose-100 dark:bg-rose-950/40" },
+                    { item: "USB-C Multiport Adapter", stock: "5 left", status: "text-amber-500 bg-amber-50 dark:bg-amber-950/20" },
+                  ].map((low, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2">
+                      <span className="text-xs font-bold">{low.item}</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${low.status}`}>{low.stock}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "lms":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Enrolled Students", val: "12,450", change: "+14.5%", isPositive: true, desc: "248 new this week", icon: Users, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Total Courses", val: "48 courses", change: "+2 added", isPositive: true, desc: "4 categories", icon: GraduationCap, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Completion Rate", val: "74.8%", change: "+3.2%", isPositive: true, desc: "High engagement", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Avg Quiz Score", val: "84.2%", change: "+0.5%", isPositive: true, desc: "Normal curve range", icon: Activity, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Monthly Course Enrollments</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Sessions"]} colors={["#4f46e5"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Instructor Leaderboard</h4>
+                <div className="space-y-4">
+                  {[
+                    { name: "Prof. Alan Turing", courses: "8 courses", rating: "4.9/5", val: 98 },
+                    { name: "Ada Lovelace", courses: "5 courses", rating: "4.8/5", val: 92 },
+                    { name: "Richard Feynman", courses: "3 courses", rating: "4.9/5", val: 84 },
+                  ].map((inst, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-1">
+                      <div>
+                        <p className="text-xs font-bold">{inst.name}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{inst.courses} • Rating {inst.rating}</p>
+                      </div>
+                      <span className="text-xs font-bold text-indigo-500">{inst.val}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "help-desk":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Open Support Tickets", val: "35 tickets", change: "-8 yesterday", isPositive: true, desc: "Avg response 18m", icon: HelpCircle, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "SLA compliance", val: "98.4%", change: "+0.5%", isPositive: true, desc: "Standard 95%", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "CSAT Feedback", val: "4.8 / 5", change: "+1.2%", isPositive: true, desc: "184 surveys completed", icon: Activity, color: "text-amber-500 bg-amber-50 dark:bg-amber-950/20" },
+                { title: "Avg Resolution Time", val: "2.4 hours", change: "-12.5%", isPositive: true, desc: "Faster closure rate", icon: Clock, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Ticket Volume Trend</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Users", "Sessions"]} colors={["#e11d48", "#f59e0b"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                <div>
+                  <h4 className="text-base font-bold mb-1">Ticket Source Categories</h4>
+                  <p className="text-xs text-slate-400 mb-6">Distribution by client systems</p>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <Charts data={MOCK_DATA.tickets} dataKeys={["value"]} colors={["#6366f1", "#06b6d4", "#10b981", "#ef4444"]} type="pie" height={160} />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "hr-mgmt":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Total Employees", val: "348 members", change: "+12 this month", isPositive: true, desc: "24 global contractors", icon: Users, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Active Leave Requests", val: "5 requests", change: "3 approved", isPositive: true, desc: "2 pending reviews", icon: CalendarIcon, color: "text-amber-500 bg-amber-50 dark:bg-amber-950/20" },
+                { title: "Open Vacancies", val: "18 jobs", change: "+4 listed", isPositive: true, desc: "84 candidates active", icon: FolderKanban, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Employee Turnover", val: "1.2%", change: "Under threshold", isPositive: true, desc: "High retention score", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Hiring Velocity & Funnel logs</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Users"]} colors={["#8b5cf6"]} type="bar" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Leaves Calendar Summary</h4>
+                <div className="space-y-4">
+                  {[
+                    { name: "John Doe", type: "Sick Leave", dates: "Jul 4 - Jul 6", status: "Approved" },
+                    { name: "Sarah Smith", type: "Annual Vacation", dates: "Jul 10 - Jul 17", status: "Pending Review" },
+                    { name: "Bruce Wayne", type: "Personal Leave", dates: "Jul 12 - Jul 13", status: "Approved" },
+                  ].map((l, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold">{l.name}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{l.type} • {l.dates}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${l.status === "Approved" ? "text-green-600 bg-green-50 dark:bg-green-950/20" : "text-amber-500 bg-amber-50 dark:bg-amber-950/20"}`}>{l.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "marketing-dashboard":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Total Marketing Spend", val: "$12,450.00", change: "+8.4%", isPositive: false, desc: "vs last month", icon: DollarSign, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "ROAS Index", val: "4.24x ROAS", change: "+12.5%", isPositive: true, desc: "Target 3.5x", icon: TrendingUp, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Ad Impressions", val: "484,200", change: "+18.3%", isPositive: true, desc: "CTR averages 2.4%", icon: Activity, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+                { title: "Cost per Lead (CPL)", val: "$2.84", change: "-12.5%", isPositive: true, desc: "Highly optimized ad copy", icon: CheckCircle2, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Ad Spending vs Conversions</h4>
+                <Charts data={MOCK_DATA.campaigns} dataKeys={["Spend", "Conversions"]} colors={["#6366f1", "#10b981"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Performance channels</h4>
+                <div className="space-y-4">
+                  {[
+                    { source: "Google Ads CPC", spend: "$6,200", conversions: "210 leads", roas: "4.8x" },
+                    { source: "Meta Conversion Ads", spend: "$4,100", conversions: "148 leads", roas: "3.9x" },
+                    { source: "LinkedIn InMail Campaign", spend: "$2,150", conversions: "62 leads", roas: "3.2x" },
+                  ].map((chan, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold">{chan.source}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Spend: {chan.spend} • {chan.conversions}</p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20">{chan.roas}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "finance":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Company Revenue", val: "$248,920.00", change: "+18.2%", isPositive: true, desc: "vs last fiscal year", icon: DollarSign, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Operational Expenses", val: "$142,300.00", change: "+8.4%", isPositive: false, desc: "Infrastructure costs", icon: Activity, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+                { title: "Profit Margin", val: "42.8%", change: "+3.2%", isPositive: true, desc: "High operational efficiency", icon: TrendingUp, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Unpaid Invoices", val: "$12,400.00", change: "-18.5%", isPositive: true, desc: "4 outstanding invoices", icon: AlertCircle, color: "text-rose-500 bg-rose-50 dark:bg-rose-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Revenue vs Expenses Ledger</h4>
+                <Charts data={MOCK_DATA.finance} dataKeys={["Revenue", "Expenses"]} colors={["#10b981", "#f43f5e"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Transaction Ledgers</h4>
+                <div className="space-y-4">
+                  {[
+                    { tx: "Invoice paid - Starlight Co", amt: "+$8,400.00", date: "Jul 3", type: "in" },
+                    { tx: "AWS Infrastructure fee", amt: "-$2,450.00", date: "Jul 2", type: "out" },
+                    { tx: "Stitch API quota renewal", amt: "-$480.00", date: "Jun 28", type: "out" },
+                    { tx: "Refund payment - client #80", amt: "-$120.00", date: "Jun 25", type: "out" },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold">{item.tx}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{item.date}</p>
+                      </div>
+                      <span className={`text-xs font-bold ${item.type === "in" ? "text-green-600 dark:text-green-400" : "text-rose-600 dark:text-rose-400"}`}>{item.amt}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "healthcare":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Patients Inpatient", val: "184 patients", change: "+12 today", isPositive: false, desc: "Outpatients queue 54", icon: Users, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Active Appointments", val: "42 slots", change: "92% complete", isPositive: true, desc: "3 doctors on duty", icon: CalendarIcon, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+                { title: "Ward Bed Availability", val: "84 beds", change: "12 vacancies", isPositive: true, desc: "Emergency section 5 beds", icon: Activity, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+                { title: "Critical Stock Alerts", val: "2 alerts", change: "Syringes, gloves", isPositive: false, desc: "Resupply ordered", icon: AlertCircle, color: "text-rose-500 bg-rose-50 dark:bg-rose-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Patient check-ins by departments</h4>
+                <Charts data={MOCK_DATA.healthcare} dataKeys={["Outpatients", "Inpatients"]} colors={["#3b82f6", "#06b6d4"]} type="bar" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Doctor Schedules Today</h4>
+                <div className="space-y-4">
+                  {[
+                    { doctor: "Dr. Gregory House", specialty: "Diagnostics", hours: "9:00 AM - 1:00 PM", status: "On Duty" },
+                    { doctor: "Dr. John Watson", specialty: "General practice", hours: "1:00 PM - 5:00 PM", status: "On Duty" },
+                    { doctor: "Dr. Stephen Strange", specialty: "Neurosurgeon", hours: "5:00 PM - 9:00 PM", status: "On Standby" },
+                  ].map((doc, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold">{doc.doctor}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{doc.specialty} • {doc.hours}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${doc.status === "On Duty" ? "text-green-600 bg-green-50 dark:bg-green-950/20" : "text-slate-500 bg-slate-50 dark:bg-slate-800"}`}>{doc.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "operations":
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "CPU Utilization", val: "42.8%", change: "Healthy load", isPositive: true, desc: "12 nodes clustering", icon: Cpu, color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20" },
+                { title: "Memory Allocation", val: "18.4 GB / 32 GB", change: "Optimal usage", isPositive: true, desc: "Garbage collection OK", icon: Layers, color: "text-violet-500 bg-violet-50 dark:bg-violet-950/20" },
+                { title: "Server Ping Latency", val: "24ms", change: "Direct routes active", isPositive: true, desc: "Cloudflare CDN enabled", icon: Activity, color: "text-sky-500 bg-sky-50 dark:bg-sky-950/20" },
+                { title: "Uptime (30 days)", val: "99.998%", change: "Zero incidents logs", isPositive: true, desc: "Maintenance completed", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20" },
+              ].map((c, i) => (
+                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.title}</span>
+                    <span className={`p-2.5 rounded-xl ${c.color}`}><c.icon className="w-4 h-4" /></span>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{c.val}</h3>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className={`text-xs font-bold flex items-center ${c.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
+                        {c.change}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{c.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Continuous Server Load metrics</h4>
+                <Charts data={MOCK_DATA.analytics} dataKeys={["Sessions", "Revenue"]} colors={["#3b82f6", "#ef4444"]} type="area" />
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h4 className="text-base font-bold mb-4">Active CI/CD Deployments</h4>
+                <div className="space-y-4">
+                  {[
+                    { repo: "Auralis UI App", build: "#1024", duration: "1m 12s", status: "Success" },
+                    { repo: "Stitch Integrator", build: "#328", duration: "48s", status: "Success" },
+                    { repo: "Marketing CRM API", build: "#89", duration: "2m 4s", status: "Running" },
+                  ].map((dep, idx) => (
+                    <div key={idx} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <div>
+                        <p className="text-xs font-bold">{dep.repo}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Build {dep.build} • Duration {dep.duration}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${dep.status === "Success" ? "text-green-600 bg-green-50 dark:bg-green-950/20" : "text-amber-500 bg-amber-50 dark:bg-amber-950/20 animate-pulse"}`}>{dep.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case "ai-saas":
       default:
         return (
