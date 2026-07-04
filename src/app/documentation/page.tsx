@@ -1,10 +1,5 @@
-import AdminLayout from "@/components/AdminLayout";
-import PageRenderer from "@/components/PageRenderer";
+import SmartPage from "@/components/SmartPage";
 
 export default function Page() {
-  return (
-    <AdminLayout>
-      <PageRenderer group="docs" slug="documentation" />
-    </AdminLayout>
-  );
+  return <SmartPage group="docs" slug="documentation" />;
 }

@@ -46,7 +46,14 @@ import {
 import Charts from "./Charts";
 import { useApp } from "./Providers";
 import { ALL_PAGES, PageInfo } from "@/data/pagesDb";
-import { STITCH_HTML, STITCH_ALIASES } from "@/data/stitchHtml";
+import {
+  FadeInUp,
+  StaggerContainer,
+  StaggerItem,
+  PageTransition,
+  TiltCard,
+  AnimatedNumber,
+} from "./Animations";
 
 // Dynamic mock databases
 const MOCK_DATA = {
@@ -91,52 +98,13 @@ interface PageRendererProps {
   slug: string;
 }
 
+/**
+ * PageRenderer: Fallback UI for pages that don't have a Stitch design.
+ * SmartPage handles Stitch routing — this component is ONLY for fallbacks.
+ */
 export default function PageRenderer({ group, slug }: PageRendererProps) {
   const { theme, dir } = useApp();
   const [activeTab, setActiveTab] = useState("overview");
-
-  const targetPath = `${group}/${slug}`;
-  const resolvedKey = STITCH_HTML[targetPath] 
-    ? targetPath 
-    : (STITCH_ALIASES[targetPath] && STITCH_HTML[STITCH_ALIASES[targetPath]])
-      ? STITCH_ALIASES[targetPath]
-      : null;
-
-  // Execute inline scripts of the screen
-  useEffect(() => {
-    if (!resolvedKey) return;
-    const container = document.getElementById("stitch-screen-container");
-    if (!container) return;
-
-    const scripts = container.querySelectorAll("script");
-    const spawnedScripts: HTMLScriptElement[] = [];
-
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement("script");
-      if (oldScript.src) {
-        newScript.src = oldScript.src;
-      } else {
-        newScript.textContent = oldScript.textContent;
-      }
-      document.body.appendChild(newScript);
-      spawnedScripts.push(newScript);
-    });
-
-    return () => {
-      spawnedScripts.forEach((s) => s.remove());
-    };
-  }, [resolvedKey]);
-
-  if (resolvedKey) {
-    const stitchScreen = STITCH_HTML[resolvedKey];
-    return (
-      <div 
-        id="stitch-screen-container"
-        className={`${stitchScreen.bodyClass} min-h-screen`}
-        dangerouslySetInnerHTML={{ __html: stitchScreen.html }} 
-      />
-    );
-  }
 
   // AI chat specific states
   const [chatInput, setChatInput] = useState("");

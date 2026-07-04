@@ -1,5 +1,4 @@
-import AdminLayout from "@/components/AdminLayout";
-import PageRenderer from "@/components/PageRenderer";
+import SmartPage from "@/components/SmartPage";
 import { ALL_PAGES } from "@/data/pagesDb";
 
 export function generateStaticParams() {
@@ -14,9 +13,5 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  return (
-    <AdminLayout>
-      <PageRenderer group="lms" slug={slug} />
-    </AdminLayout>
-  );
+  return <SmartPage group="lms" slug={slug} />;
 }

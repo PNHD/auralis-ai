@@ -42,7 +42,8 @@ export default function Home() {
       if (oldScript.src) {
         newScript.src = oldScript.src;
       } else {
-        newScript.textContent = oldScript.textContent;
+        // Wrap in IIFE to scope variables and prevent redeclaration errors
+        newScript.textContent = `(function(){${oldScript.textContent}})();`;
       }
       document.body.appendChild(newScript);
       spawnedScripts.push(newScript);

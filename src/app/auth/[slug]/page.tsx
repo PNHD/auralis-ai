@@ -1,4 +1,4 @@
-import PageRenderer from "@/components/PageRenderer";
+import SmartPage from "@/components/SmartPage";
 import { ALL_PAGES } from "@/data/pagesDb";
 
 export function generateStaticParams() {
@@ -13,9 +13,5 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
-      <PageRenderer group="auth" slug={slug} />
-    </div>
-  );
+  return <SmartPage group="auth" slug={slug} />;
 }
